@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-commerce Customer Analysis Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --ink: #111318;
+      --muted: #5d6472;
+      --rule: #d9dde5;
+      --soft: #eef0f4;
+      --blue: #5477c4;
+      --orange: #cc6f47;
+      --olive: #71b436;
+      --gold: #b8a037;
+      --red: #b85b5b;
+      --shadow: 0 10px 28px rgba(20, 24, 33, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      background: #111318;
+      color: #ffffff;
+      overflow: auto;
+    }
+
+    .brand {
+      font-size: 22px;
+      line-height: 1.12;
+      font-weight: 760;
+      margin-bottom: 18px;
+    }
+
+    .side-note {
+      color: #c4cad6;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 26px;
+    }
+
+    nav {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 26px;
+    }
+
+    nav a {
+      display: block;
+      gap: 12px;
+      width: 100%;
+      min-height: 58px;
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #eef2f8;
+      background: rgba(255, 255, 255, 0.04);
+      text-decoration: none;
+      font-size: 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .nav-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+
+    .nav-desc {
+      display: block;
+      margin-top: 5px;
+      color: #aeb6c5;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    main {
+      padding: 34px 42px 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 42px;
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      max-width: 900px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .source-chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--rule);
+      background: var(--panel);
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      min-width: 230px;
+    }
+
+    .report-context {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .context-card {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .context-card h2,
+    .context-card h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .context-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .driver-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .driver-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 180px) minmax(120px, 1fr) 62px;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .driver-bar {
+      position: relative;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--soft);
+    }
+
+    .driver-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .driver-row.negative .driver-bar span { background: var(--red); }
+    .driver-value {
+      color: var(--ink);
+      font-weight: 760;
+      text-align: right;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 116px;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 760;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .insight-band {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .insight {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-left: 6px solid var(--blue);
+      border-radius: 8px;
+      padding: 16px 18px;
+      min-height: 112px;
+    }
+
+    .insight:nth-child(2) { border-left-color: var(--orange); }
+    .insight:nth-child(3) { border-left-color: var(--olive); }
+    .insight h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .insight p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    section {
+      margin-top: 30px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid var(--rule);
+      padding-top: 24px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      max-width: 620px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .chart-card {
+      display: grid;
+      grid-template-rows: auto minmax(260px, auto) auto;
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-head {
+      padding: 16px 18px 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .chart-meta {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chart-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .mini-tag {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: #424956;
+      font-size: 11px;
+      font-weight: 760;
+      line-height: 1;
+    }
+
+    .chart-head h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .chart-image {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 290px;
+      padding: 14px;
+      background: #fbfcfe;
+    }
+
+    .chart-image img {
+      max-width: 100%;
+      max-height: 430px;
+      object-fit: contain;
+      cursor: zoom-in;
+    }
+
+    .chart-body {
+      padding: 12px 18px 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .methodology {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 20px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .methodology strong { color: var(--ink); }
+
+    .examples-grid,
+    .next-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .example-card,
+    .next-card {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 150px;
+    }
+
+    .example-card h3,
+    .next-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .example-card p,
+    .next-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .example-card.positive { border-top: 5px solid var(--olive); }
+    .example-card.neutral { border-top: 5px solid var(--gold); }
+    .example-card.negative { border-top: 5px solid var(--red); }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(17, 19, 24, 0.82);
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-inner {
+      width: min(1180px, 96vw);
+      max-height: 92vh;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .close-button {
+      min-width: 40px;
+      height: 36px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 18px;
+      max-height: calc(92vh - 70px);
+      overflow: auto;
+      background: #fbfcfe;
+    }
+
+    .modal-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .empty {
+      display: none;
+      padding: 28px;
+      border: 1px dashed var(--rule);
+      border-radius: 8px;
+      color: var(--muted);
+      background: var(--panel);
+      text-align: center;
+    }
+
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      aside {
+        position: relative;
+        height: auto;
+      }
+      nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      main { padding: 28px 22px 48px; }
+      .topbar { display: block; }
+      .source-chip { margin-top: 16px; }
+      .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .insight-band,
+      .report-context,
+      .examples-grid,
+      .next-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      h1 { font-size: 32px; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chart-grid { grid-template-columns: 1fr; }
+      .driver-row { grid-template-columns: 1fr 1fr 54px; }
+      .section-title { display: block; }
+      nav { grid-template-columns: 1fr; }
+      .chart-image { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">E-commerce Customer Analysis Dashboard</div>
+      <p class="side-note">Static web dashboard summarizing the Python charts generated from the customer review dataset.</p>
+      <nav aria-label="Dashboard sections">
+        <a href="#overview"><span class="nav-title">Overview</span><span class="nav-desc">KPI summary and main business takeaways</span></a>
+        <a href="#quality"><span class="nav-title">Data quality</span><span class="nav-desc">Missingness, duplicates, invalid values, and outliers</span></a>
+        <a href="#univariate"><span class="nav-title">Customer distributions</span><span class="nav-desc">Age, tenure, AOV, and LTV shape</span></a>
+        <a href="#bivariate"><span class="nav-title">LTV relationships</span><span class="nav-desc">Behavior, engagement, and friction versus value</span></a>
+        <a href="#multivariate"><span class="nav-title">Combined behavior signals</span><span class="nav-desc">Intent, session depth, abandonment, and tenure</span></a>
+        <a href="#sentiment"><span class="nav-title">Review sentiment</span><span class="nav-desc">VADER labels and value comparison</span></a>
+        <a href="#methodology"><span class="nav-title">Sources and method</span><span class="nav-desc">Dataset, cleaning rules, and caveats</span></a>
+      </nav>
+    </aside>
+
+    <main>
+      <div id="overview" class="topbar">
+        <div>
+          <h1>Customer behavior, value, and review sentiment</h1>
+          <p class="subtitle">Interactive chart explorer rebuilt from the latest report: data quality, customer distributions, LTV drivers, friction signals, sentiment classes, and recommended next analysis.</p>
+        </div>
+        <div class="source-chip">
+          <strong>Source grain</strong><br>
+          One row per customer record<br>
+          Dataset: 50,000 rows x 25 columns
+        </div>
+      </div>
+
+      <div class="kpi-grid" aria-label="Key metrics">
+        <div class="kpi"><div class="kpi-value">50k</div><div class="kpi-label">Customer-level rows in the source CSV</div></div>
+        <div class="kpi"><div class="kpi-value">25</div><div class="kpi-label">Original columns across profile, behavior, value, and review text</div></div>
+        <div class="kpi"><div class="kpi-value">$1.24k</div><div class="kpi-label">Median customer Lifetime Value after cleaning</div></div>
+        <div class="kpi"><div class="kpi-value">0</div><div class="kpi-label">Full duplicate rows found in the raw dataset</div></div>
+        <div class="kpi"><div class="kpi-value">12.0%</div><div class="kpi-label">Highest missing share: Social_Media_Engagement_Score</div></div>
+        <div class="kpi"><div class="kpi-value">74.4%</div><div class="kpi-label">Reviews classified as positive by VADER sentiment scoring</div></div>
+      </div>
+
+      <div class="insight-band">
+        <article class="insight">
+          <h3>Behavior explains more LTV variation than demographics</h3>
+          <p>Total purchases, session depth, pages per session, login frequency, email open rate, and wishlist items carry the strongest directional value signals.</p>
+        </article>
+        <article class="insight">
+          <h3>Cart abandonment is the clearest friction flag</h3>
+          <p>Abandonment is negatively associated with LTV, so checkout diagnostics should focus on high-intent users who still abandon carts.</p>
+        </article>
+        <article class="insight">
+          <h3>Sentiment adds customer-experience context</h3>
+          <p>Negative reviews are large enough to mine and should be paired with service, returns, and abandonment metrics before operational action.</p>
+        </article>
+      </div>
+
+      <div id="dashboardSections"></div>
+
+      <section id="sentiment-examples">
+        <div class="section-title">
+          <h2>Sentiment review examples</h2>
+          <p>Review examples from the report make the NLP labels easier to interpret before using them as business signals.</p>
+        </div>
+        <div class="examples-grid">
+          <article class="example-card positive">
+            <h3>Positive</h3>
+            <p>The order experience was better than expected; the items matched the descriptions and checkout was quick. Overall, I would recommend it.</p>
+          </article>
+          <article class="example-card neutral">
+            <h3>Neutral</h3>
+            <p>The store worked for what I needed; the product was okay, but the value depends a lot on the discount.</p>
+          </article>
+          <article class="example-card negative">
+            <h3>Negative</h3>
+            <p>I had a frustrating experience with this store; the checkout flow felt inconvenient and I needed more help than expected.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="methodology">
+        <div class="section-title">
+          <h2>Sources and methodology</h2>
+          <p>Visible source notes keep the dashboard auditable without turning the page into a notebook dump.</p>
+        </div>
+        <div class="methodology">
+          <p><strong>Sources used:</strong> <code>Report_ecommerce_customer behavior analysis_Sheldon.pdf</code>, <code>Data Analysis and Visualization/ecommerce_customer behavior analysis_Sheldon.ipynb</code>, and <code>Dataset/ecommerce_customer_dataset_with_reviews.csv</code>. The charts shown here are the PNG outputs generated from the Python analysis workflow.</p>
+          <p><strong>Cleaning basis:</strong> high-missing or out-of-scope fields were removed for EDA; numeric missing values were median-imputed; duplicate rows, invalid values, and outliers were reviewed before interpreting the charts.</p>
+          <p><strong>Sentiment method:</strong> review text was scored with VADER compound sentiment. Scores at or above 0.05 were labeled Positive, scores at or below -0.05 were labeled Negative, and the middle band was labeled Neutral.</p>
+          <p><strong>Dashboard caveat:</strong> this is a static dashboard generated from local files. It does not auto-refresh and should be regenerated after the notebook or source CSV changes.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-inner">
+      <div class="modal-head">
+        <h2 id="modalTitle" class="modal-title">Chart preview</h2>
+        <button id="closeModal" class="close-button" type="button" aria-label="Close chart preview">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImage" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chartRoot = "assets/charts/";
+    const sections = [
+      { id: "quality", label: "Data quality", short: "Quality", description: "Checks that shape how much confidence to place in the analysis before acting on it." },
+      { id: "univariate", label: "Univariate analysis", short: "Univariate", description: "Single-variable distributions that show the customer base, value spread, and skew." },
+      { id: "bivariate", label: "Bivariate analysis", short: "Bivariate", description: "Pairwise relationships that identify the most useful behavior and friction signals." },
+      { id: "multivariate", label: "Multivariate analysis", short: "Multivariate", description: "Combined signals that help separate high-value intent from customer-experience friction." },
+      { id: "sentiment", label: "Sentiment analysis", short: "Sentiment", description: "Review-text classification and its relationship with customer value." }
+    ];
+
+    const charts = [
+      { section: "quality", lenses: ["trust"], tags: ["missingness", "source quality"], file: "missing_fields.png", title: "Highest missing fields", insight: "Social engagement, credit balance, and mobile usage have the largest missing shares, so missingness should be treated as an analysis risk." },
+      { section: "quality", lenses: ["trust", "friction"], tags: ["invalid values", "outliers"], file: "quality_flags.png", title: "Data quality flags", insight: "Invalid ages, rates above 100%, and long-tail AOV/LTV outliers are small enough to analyze but important enough to document." },
+      { section: "univariate", lenses: ["value"], tags: ["profile", "age"], file: "age_groups.png", title: "Age group distribution", insight: "The customer base has a broad working-age core; age is useful for context, but less actionable than behavior." },
+      { section: "univariate", lenses: ["value"], tags: ["tenure", "lifecycle"], file: "membership_box.png", title: "Membership years boxplot", insight: "Tenure is concentrated around early membership years, suggesting many customers are still in activation and growth windows." },
+      { section: "univariate", lenses: ["value"], tags: ["AOV", "value distribution"], file: "aov_distribution.png", title: "Average order value distribution", insight: "AOV is right-skewed, so segment interpretation should compare medians and percentile bands, not averages alone." },
+      { section: "univariate", lenses: ["value"], tags: ["LTV", "long tail"], file: "ltv_distribution.png", title: "Lifetime value distribution", insight: "LTV has a long tail of high-value customers, supporting targeted retention and upsell strategies." },
+      { section: "bivariate", lenses: ["value"], tags: ["demographics", "LTV"], file: "age_ltv.png", title: "Age versus Lifetime Value", insight: "Age is mostly contextual; behavior metrics explain customer value more clearly than demographics." },
+      { section: "bivariate", lenses: ["value"], tags: ["gender", "segments"], file: "gender_ltv.png", title: "Average Lifetime Value by gender", insight: "Gender-level LTV differences are small relative to behavior-based differences, making behavior segments more actionable." },
+      { section: "bivariate", lenses: ["value", "friction"], tags: ["session duration", "engagement"], file: "session_ltv.png", title: "Session duration versus Lifetime Value", insight: "Longer sessions are associated with higher LTV, but long sessions can also reflect browsing friction." },
+      { section: "bivariate", lenses: ["value", "intent"], tags: ["wishlist", "purchase intent"], file: "wishlist_ltv.png", title: "Wishlist items versus Lifetime Value", insight: "Wishlist depth is a practical purchase-intent signal that can support triggered conversion journeys." },
+      { section: "bivariate", lenses: ["value", "marketing"], tags: ["email", "campaign"], file: "email_ltv.png", title: "Email engagement and Lifetime Value", insight: "Higher email open groups show higher average LTV, making engagement useful for campaign prioritization." },
+      { section: "bivariate", lenses: ["value", "friction", "intent", "marketing"], tags: ["correlation", "drivers"], file: "correlation_heatmap.png", title: "Behavior correlation heatmap", insight: "Total purchases, session depth, pages per session, login frequency, email open rate, and wishlist items are the strongest positive LTV signals." },
+      { section: "multivariate", lenses: ["value", "intent"], tags: ["session", "wishlist", "LTV"], file: "ltv_session_wishlist.png", title: "LTV, session duration, and wishlist intent", insight: "High-LTV customers often combine deeper sessions with stronger wishlist intent." },
+      { section: "multivariate", lenses: ["value", "friction"], tags: ["cart abandonment", "checkout"], file: "ltv_abandonment_session.png", title: "LTV, abandonment, and session duration", insight: "Abandonment is the clearest friction signal and should be diagnosed among high-intent customers." },
+      { section: "multivariate", lenses: ["value", "intent"], tags: ["purchase frequency", "tenure"], file: "membership_purchase_heatmap.png", title: "Membership and purchase frequency heatmap", insight: "Purchase frequency dominates tenure when segmenting average LTV." },
+      { section: "sentiment", lenses: ["sentiment", "friction"], tags: ["VADER", "reviews"], file: "sentiment_distribution.png", title: "Review sentiment distribution", insight: "Most reviews are positive, but the negative pool is large enough to mine for service, returns, and checkout issues." },
+      { section: "sentiment", lenses: ["sentiment", "value"], tags: ["sentiment", "LTV"], file: "sentiment_ltv.png", title: "Average LTV by sentiment class", insight: "Review sentiment is directionally aligned with value, but should be treated as triage rather than causal proof." }
+    ];
+
+    const dashboardSections = document.getElementById("dashboardSections");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalImage = document.getElementById("modalImage");
+    const closeModal = document.getElementById("closeModal");
+    function openModal(chart) {
+      modalTitle.textContent = chart.title;
+      modalImage.src = chartRoot + chart.file;
+      modalImage.alt = chart.title;
+      modal.classList.add("open");
+    }
+
+    function closeModalView() {
+      modal.classList.remove("open");
+      modalImage.src = "";
+    }
+
+    function createChartCard(chart) {
+      const section = sections.find((item) => item.id === chart.section);
+      const article = document.createElement("article");
+      article.className = "chart-card";
+      article.dataset.section = chart.section;
+
+      const head = document.createElement("div");
+      head.className = "chart-head";
+      const meta = document.createElement("div");
+      meta.className = "chart-meta";
+      meta.textContent = section ? section.label : chart.section;
+      const title = document.createElement("h3");
+      title.textContent = chart.title;
+      const tagRow = document.createElement("div");
+      tagRow.className = "chart-meta-row";
+      chart.tags.forEach((tag) => {
+        const item = document.createElement("span");
+        item.className = "mini-tag";
+        item.textContent = tag;
+        tagRow.appendChild(item);
+      });
+      head.append(meta, title, tagRow);
+
+      const imageWrap = document.createElement("div");
+      imageWrap.className = "chart-image";
+      const image = document.createElement("img");
+      image.src = chartRoot + chart.file;
+      image.alt = chart.title;
+      image.loading = "lazy";
+      image.addEventListener("click", () => openModal(chart));
+      imageWrap.appendChild(image);
+
+      const body = document.createElement("div");
+      body.className = "chart-body";
+      body.textContent = chart.insight;
+
+      article.append(head, imageWrap, body);
+      return article;
+    }
+
+    function renderCharts() {
+      dashboardSections.innerHTML = "";
+
+      sections.forEach((section) => {
+        const matchingCharts = charts.filter((chart) => chart.section === section.id);
+        const wrapper = document.createElement("section");
+        wrapper.id = section.id;
+
+        const title = document.createElement("div");
+        title.className = "section-title";
+        const h2 = document.createElement("h2");
+        h2.textContent = section.label;
+        const p = document.createElement("p");
+        p.textContent = section.description;
+        title.append(h2, p);
+
+        const grid = document.createElement("div");
+        grid.className = "chart-grid";
+        matchingCharts.forEach((chart) => grid.appendChild(createChartCard(chart)));
+        wrapper.append(title, grid);
+        dashboardSections.appendChild(wrapper);
+      });
+    }
+
+    closeModal.addEventListener("click", closeModalView);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeModalView();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModalView();
+    });
+
+    renderCharts();
+  </script>
+</body>
+</html>

@@ -1,16 +1,25 @@
-# Ecommerce Customer Data Analysis Project
+# Capstone Project - Ecommerce Customer Behavior Data Analysis
 
 This project explores an ecommerce customer dataset to understand customer value, engagement behavior, purchase patterns, review sentiment, and data quality risks. The analysis is built as a Python/Jupyter workflow and is intended to turn raw customer-level data into practical business insights for retention, marketing, and customer experience decisions.
 
-## Business Questions
+## Project Objectives
+
+The project objective is to understand which customer behaviors and experiences are most associated with higher Lifetime Value, then convert those findings into practical actions for retention, conversion, and customer experience improvement.
+
+1.	Identify the main drivers and inhibitors of customer Lifetime Value.
+2.	Assess data quality before relying on analysis outputs.
+3.	Use EDA to understand univariate distributions, bivariate relationships, and multivariate behavior patterns.
+4.	Use sentiment analysis to convert customer review text into measurable customer experience signals.
+5.	Translate the analysis into business insights, risks, recommendations, and future analysis opportunities.
+
 
 The project is organized around these questions:
 
-- Which customer behaviors are most associated with higher lifetime value?
-- How do engagement signals such as login frequency, session duration, email open rate, wishlist items, and cart abandonment relate to customer value?
-- Are there customer segments, such as gender, age group, membership tenure, or purchase frequency, that show materially different outcomes?
-- What data quality issues may affect the reliability of the analysis?
-- What review sentiment patterns are visible, and how might they connect to customer value or experience?
+1. Which customer behaviors are most associated with higher lifetime value?
+2. How do engagement signals such as login frequency, session duration, email open rate, wishlist items, and cart abandonment relate to customer value?
+3. Are there customer segments, such as gender, age group, membership tenure, or purchase frequency, that show materially different outcomes?
+4. What data quality issues may affect the reliability of the analysis?
+5. What review sentiment patterns are visible, and how might they connect to customer value or experience?
 
 ## Dataset
 
@@ -37,11 +46,6 @@ Key column groups:
 - Service and risk signals: `Returns_Rate`, `Customer_Service_Calls`, `Credit_Balance`, `Churned`
 - Text data: `Reviews`
 
-Countries represented in the dataset:
-
-```text
-Australia, Canada, France, Germany, India, Japan, UK, USA
-```
 
 ## Project Structure
 
@@ -52,22 +56,11 @@ Australia, Canada, France, Germany, India, Japan, UK, USA
 ├── Dataset/
 │   └── ecommerce_customer_dataset_with_reviews.csv
 ├── outputs/
-│   ├── PPT_ecommerce_customer_analysis_Sheldon.pdf
-│   ├── PPT_ecommerce_customer_analysis_Sheldon.pptx
-│   └── ecommerce_ppt/
-│       ├── analysis_summary.json
-│       ├── charts/
-│       └── preview/
+│   ├── PPT_ecommerce_customer_analysis.pdf
+│   └── Report_ecommerce_customer_analysis.pdf
 ├── .gitignore
 └── README.md
 ```
-
-Notes:
-
-- `Data processing/ecommerce data analysis_Sheldon.ipynb` is the main analysis notebook.
-- `Dataset/ecommerce_customer_dataset_with_reviews.csv` is the source dataset currently committed to the repository.
-- `outputs/` contains generated charts, presentation files, previews, and summary artifacts. These are local generated outputs and are ignored by Git.
-- `AGENTS.md` contains local agent instructions and is ignored going forward.
 
 ## Tools And Libraries
 
@@ -181,21 +174,8 @@ Customer service calls also show a negative relationship with lifetime value. Th
 - Compare high-value and low-value customers using sample sizes and medians, not only means.
 - Validate whether missing values are random or concentrated in specific customer groups.
 - Treat invalid rates above 100% and unusual age values as quality flags before final modeling.
-- Build a churn-focused follow-up analysis using `Churned` as the target variable.
 - Consider regression or classification only after data cleaning decisions are documented.
 - Turn the most actionable findings into retention, email, checkout, and service improvement experiments.
-
-## Generated Outputs
-
-The local `outputs/` folder includes generated analysis artifacts such as:
-
-- PowerPoint presentation: `outputs/PPT_ecommerce_customer_analysis_Sheldon.pptx`
-- PDF version: `outputs/PPT_ecommerce_customer_analysis_Sheldon.pdf`
-- Chart images under `outputs/ecommerce_ppt/charts/`
-- Rendered slide previews under `outputs/ecommerce_ppt/preview/`
-- Structured summary: `outputs/ecommerce_ppt/analysis_summary.json`
-
-These files are ignored by Git because they are generated artifacts and can become large. Keep source data, notebooks, and reproducible logic under version control; regenerate outputs when needed.
 
 ## Limitations
 
@@ -209,4 +189,3 @@ These files are ignored by Git because they are generated artifacts and can beco
 
 - `.gitignore` excludes local system files, generated outputs, virtual environments, secrets, temporary files, and local agent instructions.
 - The CSV dataset was intentionally committed for this version of the project.
-- Future generated reports and charts should remain in `outputs/` unless there is a specific reason to version them.
